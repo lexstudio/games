@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define BOARD_SIZE 8
+#define NUM_SHIPS 3
+
+void initializeBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            board[i][j] = '-';
+        }
+    }
+}
+
+void printBoard(char board[BOARD_SIZE][BOARD_SIZE]) {
+    printf("\nTabloul de joc:\n");
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void placeShips(char board[BOARD_SIZE][BOARD_SIZE]) {
+    srand(time(NULL));
+    int shipsPlaced = 0;
+
+    while (shipsPlaced < NUM_SHIPS) {
+        int x = rand() % BOARD_SIZE;
+        int y = rand() % BOARD_SIZE;
+
+        if (board[x][y] == '-') {
+            board[x][y] = 'S';
+            shipsPlaced++;
+        }
+    }
+}
+
+int main() {
+    char playerBoard[BOARD_SIZE][BOARD_SIZE];
+    char computerBoard[BOARD_SIZE][BOARD_SIZE];
+
+    initializeBoard(playerBoard);
+    initializeBoard(computerBoard);
+
+    printf("Bine ai venit la Batalia Navala!\n");
+    printf("Jucatorul si calculatorul isi plaseaza navele.\n");
+
+    placeShips(playerBoard);
+    placeShips(computerBoard);
+
+    int playerGuessX, playerGuessY;
+    int computerGuessX, computerGuessY;
+
+    printf("Tabloul tau:\n");
+    printBoard(playerBoard);
+
+    // Vom simula doar 5 încercări de ghicire pentru jucător și computer
+    for (int attempts = 0; attempts < 5; ++attempts) {
+        printf("Runda %d\n", attempts + 1);
+
+        printf("Introdu coordonatele x (0-7): ");
+        scanf("%d", &playerGuessX);
+        printf("Introdu coordonatele y (0-7): ");
+        scanf("%d", &playerGuessY);
+
+        if (playerBoard[playerGuessX][playerGuessY] == 'S') {
+            printf("Ai lovit o nava!\n");
+            playerBoard[playerGuessX][playerGuessY] = 'X';
+        } else {
+            printf("Nu ai lovit nicio nava.\n");
+        }
+
+        printf("Tabloul tau:\n");
+        printBoard(playerBoard);
+
+        // Computerul alege aleatoriu coordonatele pentru a ghici
+        computerGuessX = rand() % BOARD_SIZE;
+        computerGuessY = rand() % BOARD_SIZE;
+
+        if (computerBoard[computerGuessX][computerGuessY] == 'S') {
+            printf("Computerul a lovit o nava!\n");
+            computerBoard[computerGuessX][computerGuessY] = 'X';
+        } else {
+            printf("Computerul nu a lovit nicio nava.\n");
+        }
+
+        printf("Tabloul computerului:\n");
+        printBoard(computerBoard);
+    }
+
+    return 0;
+}
